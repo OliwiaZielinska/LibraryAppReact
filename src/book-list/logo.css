@@ -1,0 +1,7 @@
+img.logo {
+    position: fixed;
+    top: 85px; /* odległość od góry */
+    left: 35px; /* odległość od lewej krawędzi */
+    max-width: 300px;
+    max-height: 300px;
+}
