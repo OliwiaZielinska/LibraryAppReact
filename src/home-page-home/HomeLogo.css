@@ -1,0 +1,7 @@
+img.homelogo {
+    position: fixed;
+    top: 150px; /* odległość od góry */
+    left: 500px; /* odległość od lewej krawędzi */
+    max-width: 500px;
+    max-height: 500px;
+}

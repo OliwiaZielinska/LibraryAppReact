@@ -1,7 +1,5 @@
-import './BookList.css';
-import './SearchBook.css';
+import './LoanList.css';
 import './/logo.css';
-import Logo from './/logo.jpg';
 
 import * as React from 'react';
 import Table from '@mui/material/Table';
@@ -16,16 +14,14 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import {
-  Autocomplete,
   Box,
   IconButton,
   TableFooter,
   TablePagination,
-  TextField,
   Typography,
   useTheme,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import Logo from '../book-list/logo.jpg';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -109,128 +105,34 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 
 function createData(
   id: number,
-  isbn: string,
-  title: string,
-  author: string,
-  publisher: string,
-  publicationYear: number,
-  isAvailable: string,
+  loan_date: string,
+  return_date: string,
+  termin_date: string,
+  book_id: number,
+  user_id: number,
 ) {
-  return { id, isbn, title, author, publisher, publicationYear, isAvailable };
+  return { id, loan_date, return_date, termin_date, book_id, user_id };
 }
 
 const rows = [
-  createData(
-    1,
-    '9788373191723',
-    'Zbrodnia i kara',
-    'Fiodor Dostojewski',
-    'Wydawnictwo Literackie',
-    1866,
-    'true',
-  ),
-  createData(
-    2,
-    '9788375615174',
-    'Władca Pierścieni: Drużyna Pierścienia',
-    'J.R.R. Tolkien',
-    'Wydawnictwo Amber',
-    1954,
-    'true',
-  ),
-  createData(
-    3,
-    '9788324657952',
-    '1984',
-    'George Orwell',
-    'Wydawnictwo Literackie',
-    1949,
-    'true',
-  ),
-  createData(
-    4,
-    '9788378391532',
-    'Metro 2033',
-    'Dmitrij Głuchowski',
-    'Insignis Media',
-    2005,
-    'false',
-  ),
-  createData(
-    5,
-    '9788378007497',
-    'Harry Potter i Kamień Filozoficzny',
-    'J.K. Rowling',
-    'Media Rodzina',
-    1997,
-    'true',
-  ),
-  createData(
-    6,
-    '9788374951561',
-    'Lśnienie',
-    'Stephen King',
-    'Albatros',
-    1977,
-    'true',
-  ),
-  createData(
-    7,
-    '9788378395516',
-    'Sto lat samotności',
-    'Gabriel García Márquez',
-    'Wydawnictwo Literackie',
-    1967,
-    'true',
-  ),
-  createData(
-    8,
-    '9788380082396',
-    'Sklepik z marzeniami',
-    'Stephen King',
-    'Albatros',
-    1993,
-    'true',
-  ),
-  createData(
-    9,
-    '9788375780743',
-    'Mały Książę',
-    'Antoine de Saint-Exupéry',
-    'Agencja Wydawnicza Jerzy Mostowski',
-    1943,
-    'true',
-  ),
-  createData(
-    10,
-    '9788373199149',
-    'Bracia Karamazow',
-    'Fiodor Dostojewski',
-    'Wydawnictwo Literackie',
-    1880,
-    'true',
-  ),
-  createData(
-    11,
-    '9788380741202',
-    'Hobbit, czyli tam i z powrotem',
-    'J.R.R. Tolkien',
-    'Wydawnictwo Amber',
-    1937,
-    'true',
-  ),
-  createData(
-    12,
-    '9788324717794',
-    'Pan Tadeusz',
-    'Adam Mickiewicz',
-    'Zielona Sowa',
-    1834,
-    'true',
-  ),
+  createData(1, '2024-04-10', '2024-05-01', '2024-05-15', 1, 1),
+  createData(2, '2024-04-12', '2024-05-03', '2024-05-17', 2, 2),
+  createData(3, '2024-04-15', '2024-05-06', '2024-05-20', 3, 3),
+  createData(4, '2024-04-18', '2024-05-09', '2024-05-23', 4, 4),
+  createData(5, '2024-04-20', '2024-05-12', '2024-05-26', 5, 5),
+  createData(6, '2024-04-22', '2024-05-15', '2024-05-29', 6, 6),
+  createData(7, '2024-04-25', '2024-05-18', '2024-06-02', 7, 7),
+  createData(8, '2024-04-28', '2024-05-21', '2024-06-05', 8, 8),
+  createData(9, '2024-05-01', '2024-05-24', '2024-06-08', 9, 9),
+  createData(10, '2024-05-03', '2024-05-27', '2024-06-10', 10, 10),
+  createData(11, '2024-05-05', '2024-05-30', '2024-06-12', 11, 1),
+  createData(12, '2024-05-08', '2024-06-02', '2024-06-15', 12, 2),
+  createData(13, '2024-05-10', '2024-06-04', '2024-06-17', 11, 3),
+  createData(14, '2024-05-13', '2024-06-06', '2024-06-19', 10, 4),
+  createData(15, '2024-05-02', 'null', '2024-06-19', 10, 4),
 ];
 
-export default function BookList() {
+export default function LoanList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -251,9 +153,10 @@ export default function BookList() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   return (
     <div>
-      <form className="BookList">
+      <form className="LoanList">
         <Box
           sx={{
             display: 'flex',
@@ -263,38 +166,19 @@ export default function BookList() {
         >
           <img src={Logo} alt="Logo" className="logo" />
           <Typography variant="h3" component="h2">
-            List of books available in our library
+            List of loans all our readers
           </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={rows.map((row) => row.title)}
-            sx={{ width: 300, marginRight: 1 }} // Ustawienie marginesu dla odstępu między elementami
-            renderInput={(params) => <TextField {...params} label="Search" />}
-          />
-          <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
         </Box>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="custom pagination table">
             <TableHead>
               <TableRow>
                 <TableCell align="center">Id</TableCell>
-                <TableCell align="center">ISBN</TableCell>
-                <TableCell align="center">Title</TableCell>
-                <TableCell align="center">Author</TableCell>
-                <TableCell align="center">Publisher</TableCell>
-                <TableCell align="center">Publication&nbsp;year</TableCell>
-                <TableCell align="center">Available</TableCell>
+                <TableCell align="center">Loan&nbsp;date</TableCell>
+                <TableCell align="center">Return&nbsp;date</TableCell>
+                <TableCell align="center">Termin&nbsp;date</TableCell>
+                <TableCell align="center">Book&nbsp;id</TableCell>
+                <TableCell align="center">User&nbsp;id</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -310,22 +194,19 @@ export default function BookList() {
                     {row.id}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.isbn}
+                    {row.loan_date}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.title}
+                    {row.return_date}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.author}
+                    {row.termin_date}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.publisher}
+                    {row.book_id}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.publicationYear}
-                  </TableCell>
-                  <TableCell style={{ width: 160 }} align="center">
-                    {row.isAvailable}
+                    {row.user_id}
                   </TableCell>
                 </TableRow>
               ))}
