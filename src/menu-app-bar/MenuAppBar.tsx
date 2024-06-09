@@ -74,13 +74,16 @@ export default function MenuAppBar() {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
+          <MenuItem onClick={() => handleMenuItemClick('/home')}>Home</MenuItem>
           <MenuItem onClick={() => handleMenuItemClick('/home/1')}>
             Book
           </MenuItem>
           <MenuItem onClick={() => handleMenuItemClick('/home/2')}>
             Loan
           </MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick('/home')}>Home</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('/home/3')}>
+            User
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

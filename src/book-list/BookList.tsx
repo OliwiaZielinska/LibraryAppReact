@@ -4,6 +4,7 @@ import './/logo.css';
 import Logo from './/logo.jpg';
 
 import * as React from 'react';
+import axios from 'axios';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -26,6 +27,16 @@ import {
   useTheme,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+
+interface Book {
+  id: number;
+  isbn: string;
+  title: string;
+  author: string;
+  publisher: string;
+  publicationYear: number;
+  isAvailable: string;
+}
 
 interface TablePaginationActionsProps {
   count: number;
@@ -119,120 +130,38 @@ function createData(
   return { id, isbn, title, author, publisher, publicationYear, isAvailable };
 }
 
-const rows = [
-  createData(
-    1,
-    '9788373191723',
-    'Zbrodnia i kara',
-    'Fiodor Dostojewski',
-    'Wydawnictwo Literackie',
-    1866,
-    'true',
-  ),
-  createData(
-    2,
-    '9788375615174',
-    'Władca Pierścieni: Drużyna Pierścienia',
-    'J.R.R. Tolkien',
-    'Wydawnictwo Amber',
-    1954,
-    'true',
-  ),
-  createData(
-    3,
-    '9788324657952',
-    '1984',
-    'George Orwell',
-    'Wydawnictwo Literackie',
-    1949,
-    'true',
-  ),
-  createData(
-    4,
-    '9788378391532',
-    'Metro 2033',
-    'Dmitrij Głuchowski',
-    'Insignis Media',
-    2005,
-    'false',
-  ),
-  createData(
-    5,
-    '9788378007497',
-    'Harry Potter i Kamień Filozoficzny',
-    'J.K. Rowling',
-    'Media Rodzina',
-    1997,
-    'true',
-  ),
-  createData(
-    6,
-    '9788374951561',
-    'Lśnienie',
-    'Stephen King',
-    'Albatros',
-    1977,
-    'true',
-  ),
-  createData(
-    7,
-    '9788378395516',
-    'Sto lat samotności',
-    'Gabriel García Márquez',
-    'Wydawnictwo Literackie',
-    1967,
-    'true',
-  ),
-  createData(
-    8,
-    '9788380082396',
-    'Sklepik z marzeniami',
-    'Stephen King',
-    'Albatros',
-    1993,
-    'true',
-  ),
-  createData(
-    9,
-    '9788375780743',
-    'Mały Książę',
-    'Antoine de Saint-Exupéry',
-    'Agencja Wydawnicza Jerzy Mostowski',
-    1943,
-    'true',
-  ),
-  createData(
-    10,
-    '9788373199149',
-    'Bracia Karamazow',
-    'Fiodor Dostojewski',
-    'Wydawnictwo Literackie',
-    1880,
-    'true',
-  ),
-  createData(
-    11,
-    '9788380741202',
-    'Hobbit, czyli tam i z powrotem',
-    'J.R.R. Tolkien',
-    'Wydawnictwo Amber',
-    1937,
-    'true',
-  ),
-  createData(
-    12,
-    '9788324717794',
-    'Pan Tadeusz',
-    'Adam Mickiewicz',
-    'Zielona Sowa',
-    1834,
-    'true',
-  ),
-];
-
 export default function BookList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState<Book[]>([]); // Używamy interfejsu Book
+
+  React.useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const token = localStorage.getItem('token'); // Pobierz token z localStorage
+        const response = await axios.get('http://localhost:8081/books/getAll', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const books = response.data.map((book: Book) =>
+          createData(
+            book.id,
+            book.isbn,
+            book.title,
+            book.author,
+            book.publisher,
+            book.publicationYear,
+            book.isAvailable,
+          ),
+        );
+        setRows(books);
+      } catch (error) {
+        console.error('Error fetching books:', error);
+      }
+    };
+    fetchBooks();
+  }, []);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -251,6 +180,7 @@ export default function BookList() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   return (
     <div>
       <form className="BookList">
@@ -276,7 +206,7 @@ export default function BookList() {
           <Autocomplete
             disablePortal
             id="combo-box-demo"
-            options={rows.map((row) => row.title)}
+            options={rows.map((row) => row.title)} // TypeScript wie, że rows to Book[]
             sx={{ width: 300, marginRight: 1 }} // Ustawienie marginesu dla odstępu między elementami
             renderInput={(params) => <TextField {...params} label="Search" />}
           />
@@ -325,7 +255,7 @@ export default function BookList() {
                     {row.publicationYear}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.isAvailable}
+                    {row.isAvailable ? 'Yes' : 'No'}
                   </TableCell>
                 </TableRow>
               ))}
@@ -343,13 +273,11 @@ export default function BookList() {
                   count={rows.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
-                  slotProps={{
-                    select: {
-                      inputProps: {
-                        'aria-label': 'rows per page',
-                      },
-                      native: true,
+                  SelectProps={{
+                    inputProps: {
+                      'aria-label': 'rows per page',
                     },
+                    native: true,
                   }}
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}

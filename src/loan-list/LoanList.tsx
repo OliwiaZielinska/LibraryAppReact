@@ -1,7 +1,8 @@
 import './LoanList.css';
 import './/logo.css';
 
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,6 +23,7 @@ import {
   useTheme,
 } from '@mui/material';
 import Logo from '../book-list/logo.jpg';
+import moment from 'moment';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -103,40 +105,28 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-function createData(
-  id: number,
-  loan_date: string,
-  return_date: string,
-  termin_date: string,
-  book_id: number,
-  user_id: number,
-) {
-  return { id, loan_date, return_date, termin_date, book_id, user_id };
-}
-
-const rows = [
-  createData(1, '2024-04-10', '2024-05-01', '2024-05-15', 1, 1),
-  createData(2, '2024-04-12', '2024-05-03', '2024-05-17', 2, 2),
-  createData(3, '2024-04-15', '2024-05-06', '2024-05-20', 3, 3),
-  createData(4, '2024-04-18', '2024-05-09', '2024-05-23', 4, 4),
-  createData(5, '2024-04-20', '2024-05-12', '2024-05-26', 5, 5),
-  createData(6, '2024-04-22', '2024-05-15', '2024-05-29', 6, 6),
-  createData(7, '2024-04-25', '2024-05-18', '2024-06-02', 7, 7),
-  createData(8, '2024-04-28', '2024-05-21', '2024-06-05', 8, 8),
-  createData(9, '2024-05-01', '2024-05-24', '2024-06-08', 9, 9),
-  createData(10, '2024-05-03', '2024-05-27', '2024-06-10', 10, 10),
-  createData(11, '2024-05-05', '2024-05-30', '2024-06-12', 11, 1),
-  createData(12, '2024-05-08', '2024-06-02', '2024-06-15', 12, 2),
-  createData(13, '2024-05-10', '2024-06-04', '2024-06-17', 11, 3),
-  createData(14, '2024-05-13', '2024-06-06', '2024-06-19', 10, 4),
-  createData(15, '2024-05-02', 'null', '2024-06-19', 10, 4),
-];
-
 export default function LoanList() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rows, setRows] = useState<any[]>([]); // Tu przechowamy dane o wypożyczeniach
 
-  // Avoid a layout jump when reaching the last page with empty rows.
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const token = localStorage.getItem('token'); // Pobierz token z localStorage
+        const response = await axios.get('http://localhost:8081/loans/getAll', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setRows(response.data); // Ustawiamy dane o wypożyczeniach
+      } catch (error) {
+        console.error('Error fetching loans:', error);
+      }
+    };
+    fetchLoans();
+  }, []);
+
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -194,19 +184,19 @@ export default function LoanList() {
                     {row.id}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.loan_date}
+                    {moment(row.loanDate).format('YYYY-MM-DD')}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.return_date}
+                    {moment(row.returnDate).format('YYYY-MM-DD')}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.termin_date}
+                    {moment(row.dueDate).format('YYYY-MM-DD')}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.book_id}
+                    {row.book}
                   </TableCell>
                   <TableCell style={{ width: 160 }} align="center">
-                    {row.user_id}
+                    {row.user}
                   </TableCell>
                 </TableRow>
               ))}
@@ -224,13 +214,11 @@ export default function LoanList() {
                   count={rows.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
-                  slotProps={{
-                    select: {
-                      inputProps: {
-                        'aria-label': 'rows per page',
-                      },
-                      native: true,
+                  SelectProps={{
+                    inputProps: {
+                      'aria-label': 'rows per page',
                     },
+                    native: true,
                   }}
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}

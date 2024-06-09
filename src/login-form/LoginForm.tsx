@@ -5,15 +5,26 @@ import { Formik } from 'formik';
 import { useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { useApi } from '../api/ApiProvider';
 
 function LoginForm() {
   const navigate = useNavigate();
+  const apiClient = useApi();
   const onSubmit = useCallback(
     (values: { username: string; password: string }, formik: any) => {
-      navigate('/home');
+      apiClient.login(values).then((response) => {
+        if (response.success) {
+          // Przechowaj token w localStorage
+          localStorage.setItem('token', response.data?.token as string);
+          navigate('/home');
+        } else {
+          formik.setFieldError('username', 'Invalid username or password');
+        }
+      });
     },
-    [navigate],
+    [apiClient, navigate],
   );
+
   const validationSchema = useMemo(
     () =>
       yup.object().shape({
@@ -25,6 +36,7 @@ function LoginForm() {
       }),
     [],
   );
+
   return (
     <Formik
       initialValues={{ username: '', password: '' }}

@@ -1,0 +1,15 @@
+.CreateUser {
+    padding: 2rem;
+    margin-top: 2%;
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Jeśli chcesz wyśrodkować elementy w pionie */
+}
+
+.Button {
+    padding: 2rem;
+    gap: 5rem;
+    flex-direction: row;
+    align-items: center; /* Jeśli chcesz wyśrodkować elementy w pionie */
+}
