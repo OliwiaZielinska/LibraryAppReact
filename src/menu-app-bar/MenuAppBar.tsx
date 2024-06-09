@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import {
   AppBar,
   Box,
@@ -12,8 +12,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AccountCircle } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function MenuAppBar() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -44,7 +46,7 @@ export default function MenuAppBar() {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Library App
+          {t('library')}
         </Typography>
         <Box>
           <IconButton
