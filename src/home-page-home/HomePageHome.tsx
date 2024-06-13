@@ -3,14 +3,16 @@ import './HomePageHome.css';
 import './HomeLogo.css';
 import * as React from 'react';
 import HomeLogo from './HomeLogo.jpg';
+import { useTranslation } from 'react-i18next';
 
 function HomePage() {
+  const { t } = useTranslation();
   return (
     <div>
       <form className="HomePageHome">
         <img src={HomeLogo} alt="Logo" className="homelogo" />
         <Typography variant="h3" component="h2">
-          Welcome in our library !
+          {t('welcome')}
         </Typography>
       </form>
     </div>

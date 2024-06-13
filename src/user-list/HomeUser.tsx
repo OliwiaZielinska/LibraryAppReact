@@ -8,8 +8,10 @@ import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useNavigate } from 'react-router-dom';
 import { MouseEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function HomeUser() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -27,27 +29,27 @@ function HomeUser() {
   };
   return (
     <div>
-      <form className="HomeBook">
+      <form className="HomeUser">
         <img src={HomeLogo} alt="Logo" className="homelogo" />
         <Typography variant="h3" component="h2">
-          What do you want to do with users?
+          {t('userWhatDoYouDo')}
         </Typography>
         <Button
           variant="contained"
           startIcon={<PersonAddIcon />}
           onClick={() => handleMenuItemClick('/home/3/create')}
         >
-          Add
+          {t('add')}
         </Button>
         <Button variant="contained" startIcon={<PersonRemoveIcon />}>
-          Delete
+          {t('delete')}
         </Button>
         <Button
           variant="contained"
           startIcon={<PersonSearchIcon />}
           onClick={() => handleMenuItemClick('')}
         >
-          Search
+          {t('search')}
         </Button>
       </form>
     </div>

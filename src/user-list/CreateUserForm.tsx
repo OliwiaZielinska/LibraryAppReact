@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import './CreateUserForm.css';
 import Logo from './logo.jpg';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 interface CreateUserFormData {
   password: string;
@@ -21,6 +22,7 @@ interface FormErrors {
 }
 
 function CreateUserForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -102,13 +104,13 @@ function CreateUserForm() {
       <div>
         <img src={Logo} alt="Logo" className="logo" />
         <Typography variant="h4" component="h3">
-          Register a new user
+          {t('userRegisterNew')}
         </Typography>
       </div>
       <div>
         <TextField
           id="username"
-          label="Username"
+          label={t('username')}
           variant="standard"
           name="username"
           value={formData.username}
@@ -120,7 +122,7 @@ function CreateUserForm() {
       <div>
         <TextField
           id="password"
-          label="Password"
+          label={t('password')}
           variant="standard"
           type="password"
           name="password"
@@ -130,10 +132,10 @@ function CreateUserForm() {
           helperText={errors.password}
         />
       </div>
-      <div>
+      <div style={{ width: '12.5%' }}>
         <TextField
           id="role"
-          label="Role"
+          label={t('role')}
           variant="standard"
           name="role"
           select
@@ -141,8 +143,9 @@ function CreateUserForm() {
           onChange={handleChange}
           error={!!errors.role}
           helperText={errors.role}
+          style={{ width: '100%' }}
         >
-          <MenuItem value="USER">User</MenuItem>
+          <MenuItem value="USER">{t('user1')}</MenuItem>
           <MenuItem value="ADMIN">Admin</MenuItem>
         </TextField>
       </div>
@@ -161,7 +164,7 @@ function CreateUserForm() {
       <div>
         <TextField
           id="name"
-          label="Name and Surname"
+          label={t('nameAndSurname')}
           variant="standard"
           name="name"
           value={formData.name}
@@ -172,14 +175,14 @@ function CreateUserForm() {
       </div>
       <div className="Button">
         <Button type="submit" variant="contained" disabled={!isFormValid()}>
-          Register
+          {t('register')}
         </Button>
         <Button
           type="submit"
           variant="contained"
           onClick={() => handleMenuItemClick('/home/3')}
         >
-          Back
+          {t('back')}
         </Button>
       </div>
     </form>

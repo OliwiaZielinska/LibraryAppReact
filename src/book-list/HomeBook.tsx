@@ -8,8 +8,10 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useNavigate } from 'react-router-dom';
 import { MouseEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function HomeBook() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -30,24 +32,24 @@ function HomeBook() {
       <form className="HomeBook">
         <img src={HomeLogo} alt="Logo" className="homelogo" />
         <Typography variant="h3" component="h2">
-          What do you want to do with books?
+          {t('bookWhatDoYouDo')}
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddCircleIcon />}
           onClick={() => handleMenuItemClick('/home/1/create')}
         >
-          Add
+          {t('add')}
         </Button>
         <Button variant="contained" startIcon={<DeleteIcon />}>
-          Delete
+          {t('delete')}
         </Button>
         <Button
           variant="contained"
           startIcon={<MenuBookIcon />}
           onClick={() => handleMenuItemClick('/home/1/search')}
         >
-          Search
+          {t('search')}
         </Button>
       </form>
     </div>

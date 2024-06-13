@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import Logo from '../book-list/logo.jpg';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -106,6 +107,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 export default function LoanList() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState<any[]>([]); // Tu przechowamy dane o wypożyczeniach
@@ -155,8 +157,8 @@ export default function LoanList() {
           }}
         >
           <img src={Logo} alt="Logo" className="logo" />
-          <Typography variant="h3" component="h2">
-            List of loans all our readers
+          <Typography variant="h4" component="h3">
+            {t('listLoans')}
           </Typography>
         </Box>
         <TableContainer component={Paper}>
@@ -164,11 +166,11 @@ export default function LoanList() {
             <TableHead>
               <TableRow>
                 <TableCell align="center">Id</TableCell>
-                <TableCell align="center">Loan&nbsp;date</TableCell>
-                <TableCell align="center">Return&nbsp;date</TableCell>
-                <TableCell align="center">Termin&nbsp;date</TableCell>
-                <TableCell align="center">Book&nbsp;id</TableCell>
-                <TableCell align="center">User&nbsp;id</TableCell>
+                <TableCell align="center">{t('loanLoanDate')}</TableCell>
+                <TableCell align="center">{t('loanReturnDate')}</TableCell>
+                <TableCell align="center">{t('loanTerminDate')}</TableCell>
+                <TableCell align="center">{t('loanBookId')}</TableCell>
+                <TableCell align="center">{t('loanUserId')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

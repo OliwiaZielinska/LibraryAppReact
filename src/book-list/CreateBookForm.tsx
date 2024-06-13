@@ -7,6 +7,7 @@ import Logo from './logo.jpg';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useApi } from '../api/ApiProvider';
+import { useTranslation } from 'react-i18next';
 
 interface CreateBookFormData {
   isbn: string;
@@ -22,6 +23,7 @@ interface FormErrors {
 }
 
 function CreateBookForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const apiClient = useApi();
 
@@ -81,7 +83,6 @@ function CreateBookForm() {
       try {
         const token = localStorage.getItem('token'); // Pobierz token z localStorage
 
-        // Wysłanie danych formularza do backendu
         const response = await axios.post(
           'http://localhost:8081/books/create',
           formData,
@@ -92,13 +93,9 @@ function CreateBookForm() {
           },
         );
 
-        // Obsługa odpowiedzi z backendu
         console.log('Response from backend:', response.data);
-
-        // Tutaj możesz dodać obsługę sukcesu, np. wyświetlenie komunikatu potwierdzającego
       } catch (error) {
         console.error('Error creating book:', error);
-        // Tutaj możesz dodać obsługę błędów, np. wyświetlenie komunikatu o błędzie
       }
     } else {
       setErrors(formErrors);
@@ -110,7 +107,7 @@ function CreateBookForm() {
       <div>
         <img src={Logo} alt="Logo" className="logo" />
         <Typography variant="h4" component="h3">
-          Add book to our library
+          {t('bookAdd')}
         </Typography>
       </div>
       <div>
@@ -128,7 +125,7 @@ function CreateBookForm() {
       <div>
         <TextField
           id="title"
-          label="Title"
+          label={t('title')}
           variant="standard"
           name="title"
           value={formData.title}
@@ -140,7 +137,7 @@ function CreateBookForm() {
       <div>
         <TextField
           id="author"
-          label="Author"
+          label={t('author')}
           variant="standard"
           name="author"
           value={formData.author}
@@ -152,7 +149,7 @@ function CreateBookForm() {
       <div>
         <TextField
           id="publisher"
-          label="Publisher"
+          label={t('publisher')}
           variant="standard"
           name="publisher"
           value={formData.publisher}
@@ -164,7 +161,7 @@ function CreateBookForm() {
       <div>
         <TextField
           id="publicationYear"
-          label="Publication Year"
+          label={t('publicationYear')}
           variant="standard"
           name="publicationYear"
           type="number"
@@ -177,7 +174,7 @@ function CreateBookForm() {
       <div>
         <TextField
           id="availabledCopies"
-          label="Available Copies"
+          label={t('availableCopies')}
           variant="standard"
           name="availabledCopies"
           type="number"
@@ -189,14 +186,14 @@ function CreateBookForm() {
       </div>
       <div className="Button">
         <Button type="submit" variant="contained" disabled={!isFormValid()}>
-          Save
+          {t('save')}
         </Button>
         <Button
           type="submit"
           variant="contained"
           onClick={() => handleMenuItemClick('/home/1')}
         >
-          Back
+          {t('back')}
         </Button>
       </div>
     </form>

@@ -27,6 +27,7 @@ import {
   useTheme,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { useTranslation } from 'react-i18next';
 
 interface Book {
   id: number;
@@ -131,6 +132,7 @@ function createData(
 }
 
 export default function BookList() {
+  const { t } = useTranslation();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState<Book[]>([]); // Używamy interfejsu Book
@@ -163,7 +165,6 @@ export default function BookList() {
     fetchBooks();
   }, []);
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -192,8 +193,8 @@ export default function BookList() {
           }}
         >
           <img src={Logo} alt="Logo" className="logo" />
-          <Typography variant="h3" component="h2">
-            List of books available in our library
+          <Typography variant="h4" component="h3">
+            {t('bookList')}
           </Typography>
         </Box>
         <Box
@@ -206,9 +207,11 @@ export default function BookList() {
           <Autocomplete
             disablePortal
             id="combo-box-demo"
-            options={rows.map((row) => row.title)} // TypeScript wie, że rows to Book[]
-            sx={{ width: 300, marginRight: 1 }} // Ustawienie marginesu dla odstępu między elementami
-            renderInput={(params) => <TextField {...params} label="Search" />}
+            options={rows.map((row) => row.title)}
+            sx={{ width: 300, marginRight: 1 }}
+            renderInput={(params) => (
+              <TextField {...params} label={t('choose')} />
+            )}
           />
           <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
             <SearchIcon />
@@ -220,11 +223,11 @@ export default function BookList() {
               <TableRow>
                 <TableCell align="center">Id</TableCell>
                 <TableCell align="center">ISBN</TableCell>
-                <TableCell align="center">Title</TableCell>
-                <TableCell align="center">Author</TableCell>
-                <TableCell align="center">Publisher</TableCell>
-                <TableCell align="center">Publication&nbsp;year</TableCell>
-                <TableCell align="center">Available</TableCell>
+                <TableCell align="center">{t('title')}</TableCell>
+                <TableCell align="center">{t('author')}</TableCell>
+                <TableCell align="center">{t('publisher')}</TableCell>
+                <TableCell align="center">{t('publicationYear')}</TableCell>
+                <TableCell align="center">{t('available')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

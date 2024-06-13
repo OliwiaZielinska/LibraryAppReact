@@ -6,6 +6,7 @@ import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Logo from './logo.jpg';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 interface CreateLoanFormData {
   dueDate: string;
@@ -18,6 +19,7 @@ interface FormErrors {
 }
 
 function CreateLoanForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -100,13 +102,13 @@ function CreateLoanForm() {
       <div>
         <img src={Logo} alt="Logo" className="logo" />
         <Typography variant="h4" component="h3">
-          Add book's loan
+          {t('loanAddBooksLoan')}
         </Typography>
       </div>
       <div>
         <TextField
           id="dueDate"
-          label="Due Date"
+          label={t('loanTerminDate')}
           variant="standard"
           type="date"
           name="dueDate"
@@ -120,7 +122,7 @@ function CreateLoanForm() {
       <div>
         <TextField
           id="userId"
-          label="User ID"
+          label={t('loanUserId')}
           variant="standard"
           name="userId"
           type="number"
@@ -133,7 +135,7 @@ function CreateLoanForm() {
       <div>
         <TextField
           id="bookId"
-          label="Book ID"
+          label={t('loanBookId')}
           variant="standard"
           name="bookId"
           type="number"
@@ -145,14 +147,14 @@ function CreateLoanForm() {
       </div>
       <div className="Button">
         <Button type="submit" variant="contained" disabled={!isFormValid()}>
-          Create loan
+          {t('loanCreateLoan')}
         </Button>
         <Button
           type="submit"
           variant="contained"
           onClick={() => handleMenuItemClick('/home/2')}
         >
-          Back
+          {t('back')}
         </Button>
       </div>
     </form>

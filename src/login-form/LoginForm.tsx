@@ -6,8 +6,10 @@ import { useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../api/ApiProvider';
+import { useTranslation } from 'react-i18next';
 
 function LoginForm() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const apiClient = useApi();
   const onSubmit = useCallback(
@@ -54,7 +56,7 @@ function LoginForm() {
         >
           <TextField
             id="username"
-            label="Username"
+            label={t('username')}
             variant="standard"
             name="username"
             onChange={formik.handleChange}
@@ -64,7 +66,7 @@ function LoginForm() {
           />
           <TextField
             id="password"
-            label="Password"
+            label={t('password')}
             variant="standard"
             type="password"
             name="password"
@@ -80,7 +82,7 @@ function LoginForm() {
             form="singForm"
             disabled={!(formik.isValid && formik.dirty)}
           >
-            Sign in
+            {t('sign')}
           </Button>
         </form>
       )}
