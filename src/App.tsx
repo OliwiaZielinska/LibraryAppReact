@@ -10,6 +10,7 @@ import HomeBook from './book-list/HomeBook';
 import BookList from './book-list/BookList';
 import HomeLoan from './loan-list/HomeLoan';
 import HomeUser from './user-list/HomeUser';
+import UserList from './user-list/UserList';
 import CreateBookForm from './book-list/CreateBookForm';
 import CreateUserForm from './user-list/CreateUserForm';
 import CreateLoanForm from './loan-list/CreateLoanForm';
@@ -31,7 +32,7 @@ function App() {
               <Route path="2/create" element={<CreateLoanForm />} />
               <Route path="3" element={<HomeUser />} />
               <Route path="3/create" element={<CreateUserForm />} />
-              <Route path="" element={<HomePageHome />} />
+              <Route path="3/search" element={<UserList />} />
             </Route>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/" element={<Navigate to={'/login'} />} />

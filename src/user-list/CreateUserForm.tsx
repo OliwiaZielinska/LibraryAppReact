@@ -8,6 +8,7 @@ import './CreateUserForm.css';
 import Logo from './logo.jpg';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useApi } from '../api/ApiProvider';
 
 interface CreateUserFormData {
   password: string;
@@ -25,6 +26,7 @@ function CreateUserForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const apiClient = useApi();
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -45,9 +47,15 @@ function CreateUserForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>,
+  ) => {
+    if ('target' in e) {
+      const { name, value } = e.target as HTMLInputElement;
+      setFormData({ ...formData, [name]: value });
+    } else {
+      console.error('Unsupported event type');
+    }
   };
 
   const validateForm = (): FormErrors => {
@@ -67,26 +75,24 @@ function CreateUserForm() {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
       try {
-        const token = localStorage.getItem('token'); // Pobierz token z localStorage
+        const token = localStorage.getItem('token');
 
-        // Wysłanie danych formularza do backendu
-        const response = await axios.post(
-          'http://localhost:8081/auth/register',
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        const response = await apiClient.addUser(formData);
 
-        // Obsługa odpowiedzi z backendu
         console.log('Response from backend:', response.data);
 
-        // Tutaj możesz dodać obsługę sukcesu, np. wyświetlenie komunikatu potwierdzającego
+        navigate('/home/3/search');
       } catch (error) {
-        console.error('Error creating book:', error);
-        // Tutaj możesz dodać obsługę błędów, np. wyświetlenie komunikatu o błędzie
+        if (axios.isAxiosError(error)) {
+          console.error('Axios error:', error.message);
+          if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Response status:', error.response.status);
+            console.error('Response headers:', error.response.headers);
+          }
+        } else {
+          console.error('Unexpected error:', error);
+        }
       }
     } else {
       setErrors(formErrors);

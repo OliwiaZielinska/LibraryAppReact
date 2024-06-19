@@ -47,7 +47,7 @@ function HomeUser() {
         <Button
           variant="contained"
           startIcon={<PersonSearchIcon />}
-          onClick={() => handleMenuItemClick('')}
+          onClick={() => handleMenuItemClick('/home/3/search')}
         >
           {t('search')}
         </Button>

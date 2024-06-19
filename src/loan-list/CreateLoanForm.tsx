@@ -40,7 +40,6 @@ function CreateLoanForm() {
       setFormData({ ...formData, [name]: value });
     } else {
       console.error('Unsupported event type');
-      // Handle unsupported event type scenario if needed
     }
   };
 

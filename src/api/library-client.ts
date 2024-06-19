@@ -210,13 +210,29 @@ export class LibraryClient {
 
   public async addUser(data: CreateUserDto): Promise<ClientResponse<any>> {
     try {
+      const payload = {
+        ...data,
+      };
+
+      console.log('Sending POST request to addUser with data:', payload);
+
       // Pobierz token z localStorage
       const token = localStorage.getItem('token') as string;
 
       if (!token) {
         throw new Error('Token not found');
       }
-      const response = await this.client.post('/auth/register');
+
+      const response: AxiosResponse<any> = await this.client.post(
+        '/auth/register',
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
       console.log('Received response:', response);
 
       return {
@@ -226,6 +242,13 @@ export class LibraryClient {
       };
     } catch (error) {
       const axiosError = error as AxiosError<Error>;
+      console.error('Error occurred during addBook request:', axiosError);
+
+      if (axiosError.response) {
+        console.error('Response data:', axiosError.response.data);
+        console.error('Response status:', axiosError.response.status);
+        console.error('Response headers:', axiosError.response.headers);
+      }
 
       return {
         success: false,
