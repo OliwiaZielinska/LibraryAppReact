@@ -33,6 +33,7 @@ function App() {
               <Route path="3" element={<HomeUser />} />
               <Route path="3/create" element={<CreateUserForm />} />
               <Route path="3/search" element={<UserList />} />
+              <Route path="" element={<HomePageHome />} />
             </Route>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/" element={<Navigate to={'/login'} />} />
