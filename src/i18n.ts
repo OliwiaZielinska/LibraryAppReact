@@ -58,6 +58,10 @@ i18n
           yes: 'Yes',
           actions: 'Activity',
           editBook: 'Updating book information',
+          userList: 'List of all users',
+          confirmDelete: 'Delete a user',
+          confirmDeleteMessageUser:
+            'Are you sure you want to delete this user?',
         },
       },
       pl: {
@@ -111,6 +115,10 @@ i18n
           yes: 'Tak',
           actions: 'Aktywność',
           editBook: 'Zaktualizowanie informacji o książce',
+          userList: 'Lista wszystkich użytkowników',
+          confirmDelete: 'Usuwanie użytkownika',
+          confirmDeleteMessageUser:
+            'Czy na pewno chcesz usunąć tego użytkownika?',
         },
       },
     },

@@ -1,0 +1,8 @@
+.UserList{
+    padding: 2rem;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-direction: column;
+}

@@ -41,9 +41,6 @@ function HomeUser() {
         >
           {t('add')}
         </Button>
-        <Button variant="contained" startIcon={<PersonRemoveIcon />}>
-          {t('delete')}
-        </Button>
         <Button
           variant="contained"
           startIcon={<PersonSearchIcon />}

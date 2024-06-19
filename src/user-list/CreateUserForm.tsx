@@ -151,8 +151,8 @@ function CreateUserForm() {
           helperText={errors.role}
           style={{ width: '100%' }}
         >
-          <MenuItem value="USER">{t('user1')}</MenuItem>
-          <MenuItem value="ADMIN">Admin</MenuItem>
+          <MenuItem value="ROLE_READER">{t('user1')}</MenuItem>
+          <MenuItem value="ROLE_ADMIN">Admin</MenuItem>
         </TextField>
       </div>
       <div>

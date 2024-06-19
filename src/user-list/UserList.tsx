@@ -289,7 +289,7 @@ export default function UserList() {
             <TableHead>
               <TableRow>
                 <TableCell align="center">Id</TableCell>
-                <TableCell align="center">{t('name')}</TableCell>
+                <TableCell align="center">{t('nameAndSurname')}</TableCell>
                 <TableCell align="center">{t('email')}</TableCell>
                 <TableCell align="center">{t('username')}</TableCell>
                 <TableCell align="center">{t('role')}</TableCell>
@@ -371,20 +371,18 @@ export default function UserList() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {t('confirmDeleteTitle')}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t('confirmDelete')}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {t('confirmDeleteMessage')}
+            {t('confirmDeleteMessageUser')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            {t('no')}
-          </Button>
           <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
             {t('yes')}
+          </Button>
+          <Button onClick={handleDialogClose} color="primary">
+            {t('no')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -402,7 +400,7 @@ export default function UserList() {
           />
           <TextField
             margin="dense"
-            label={t('title')}
+            label={t('nameAndSurname')}
             fullWidth
             value={editUser?.name || ''}
             onChange={(e) =>

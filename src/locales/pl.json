@@ -47,5 +47,8 @@
   "no": "Nie",
   "yes": "Tak",
   "actions": "Aktywność",
-  "editBook": "Zaktualizowanie informacji o książce"
+  "editBook": "Zaktualizowanie informacji o książce",
+  "userList": "Lista wszystkich użytkowników",
+  "confirmDelete": "Usuwanie użytwkonika",
+  "confirmDeleteMessageUser": "Czy na pewno chcesz usunąć tego użytkownika?"
 }

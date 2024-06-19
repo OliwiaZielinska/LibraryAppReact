@@ -394,11 +394,11 @@ export default function BookList() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            {t('no')}
-          </Button>
           <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
             {t('yes')}
+          </Button>
+          <Button onClick={handleDialogClose} color="primary">
+            {t('no')}
           </Button>
         </DialogActions>
       </Dialog>
