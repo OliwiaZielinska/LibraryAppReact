@@ -114,7 +114,7 @@ export class LibraryClient {
         ...data,
       };
 
-      console.log('Sending POST request to addDoctor with data:', payload);
+      console.log('Sending POST request to addBook with data:', payload);
 
       // Pobierz token z localStorage
       const token = localStorage.getItem('token') as string;
@@ -142,7 +142,7 @@ export class LibraryClient {
       };
     } catch (error) {
       const axiosError = error as AxiosError<Error>;
-      console.error('Error occurred during addDoctor request:', axiosError);
+      console.error('Error occurred during addBook request:', axiosError);
 
       if (axiosError.response) {
         console.error('Response data:', axiosError.response.data);
@@ -157,6 +157,57 @@ export class LibraryClient {
       };
     }
   }
+
+  public async addLoans(data: CreateLoanDto): Promise<ClientResponse<any>> {
+    try {
+      const payload = {
+        ...data,
+      };
+
+      console.log('Sending POST request to addLoan with data:', payload);
+
+      // Pobierz token z localStorage
+      const token = localStorage.getItem('token') as string;
+
+      if (!token) {
+        throw new Error('Token not found');
+      }
+
+      const response: AxiosResponse<any> = await this.client.post(
+        '/loans/create',
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      console.log('Received response:', response);
+
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+      console.error('Error occurred during addLoans request:', axiosError);
+
+      if (axiosError.response) {
+        console.error('Response data:', axiosError.response.data);
+        console.error('Response status:', axiosError.response.status);
+        console.error('Response headers:', axiosError.response.headers);
+      }
+
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
+
   public async addUser(data: CreateUserDto): Promise<ClientResponse<any>> {
     try {
       // Pobierz token z localStorage

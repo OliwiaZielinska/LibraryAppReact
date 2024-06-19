@@ -9,6 +9,6 @@ export class LoanResponseDto {
 
 export class CreateLoanDto {
   dueDate: string | undefined;
-  user: number | undefined;
-  book: number | undefined;
+  userId: string | undefined;
+  bookId: string | undefined;
 }

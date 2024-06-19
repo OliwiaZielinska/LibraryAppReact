@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Logo from './logo.jpg';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useApi } from '../api/ApiProvider';
 
 interface CreateLoanFormData {
   dueDate: string;
@@ -21,16 +22,7 @@ interface FormErrors {
 function CreateLoanForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleMenuItemClick = (path: string) => {
-    navigate(path);
-    handleMenuClose();
-  };
+  const apiClient = useApi();
 
   const [formData, setFormData] = useState<CreateLoanFormData>({
     dueDate: '',
@@ -41,12 +33,15 @@ function CreateLoanForm() {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const handleChange = (
-    e:
-      | ChangeEvent<HTMLInputElement>
-      | ChangeEvent<{ name?: string; value: unknown }>,
+    e: ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>,
   ) => {
-    const { name, value } = e.target as HTMLInputElement;
-    setFormData({ ...formData, [name]: value });
+    if ('target' in e) {
+      const { name, value } = e.target as HTMLInputElement;
+      setFormData({ ...formData, [name]: value });
+    } else {
+      console.error('Unsupported event type');
+      // Handle unsupported event type scenario if needed
+    }
   };
 
   const validateForm = (): FormErrors => {
@@ -54,8 +49,8 @@ function CreateLoanForm() {
     if (!formData.dueDate) formErrors.dueDate = 'Due date is empty!';
     if (new Date(formData.dueDate) <= new Date())
       formErrors.dueDate = 'Due date must be in the future!';
-    if (!formData.userId) formErrors.userId = 'User id is empty!';
-    if (!formData.bookId) formErrors.bookId = 'Book id is empty!';
+    if (!formData.userId) formErrors.userId = 'User ID is empty!';
+    if (!formData.bookId) formErrors.bookId = 'Book ID is empty!';
     return formErrors;
   };
 
@@ -64,26 +59,24 @@ function CreateLoanForm() {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
       try {
-        const token = localStorage.getItem('token'); // Pobierz token z localStorage
+        const token = localStorage.getItem('token');
 
-        // Wysłanie danych formularza do backendu
-        const response = await axios.post(
-          'http://localhost:8081/loans/create',
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        const response = await apiClient.addLoans(formData);
 
-        // Obsługa odpowiedzi z backendu
         console.log('Response from backend:', response.data);
 
-        // Tutaj możesz dodać obsługę sukcesu, np. wyświetlenie komunikatu potwierdzającego
+        navigate('/home/2/search');
       } catch (error) {
-        console.error('Error creating book:', error);
-        // Tutaj możesz dodać obsługę błędów, np. wyświetlenie komunikatu o błędzie
+        if (axios.isAxiosError(error)) {
+          console.error('Axios error:', error.message);
+          if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Response status:', error.response.status);
+            console.error('Response headers:', error.response.headers);
+          }
+        } else {
+          console.error('Unexpected error:', error);
+        }
       }
     } else {
       setErrors(formErrors);
@@ -150,9 +143,9 @@ function CreateLoanForm() {
           {t('loanCreateLoan')}
         </Button>
         <Button
-          type="submit"
+          type="button"
           variant="contained"
-          onClick={() => handleMenuItemClick('/home/2')}
+          onClick={() => navigate('/home/2')}
         >
           {t('back')}
         </Button>
