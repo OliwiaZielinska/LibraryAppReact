@@ -41,9 +41,6 @@ function HomeLoan() {
         >
           {t('add')}
         </Button>
-        <Button variant="contained" startIcon={<DeleteIcon />}>
-          {t('delete')}
-        </Button>
         <Button
           variant="contained"
           startIcon={<ContentPasteSearchIcon />}

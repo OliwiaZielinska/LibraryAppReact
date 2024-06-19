@@ -44,9 +44,12 @@ function CreateBookForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const isFormValid = () => {
@@ -82,20 +85,26 @@ function CreateBookForm() {
     if (Object.keys(formErrors).length === 0) {
       try {
         const token = localStorage.getItem('token'); // Pobierz token z localStorage
-
-        const response = await axios.post(
-          'http://localhost:8081/books/create',
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
+        console.log(
+          'Sending request to backend with payload:',
+          JSON.stringify(formData, null, 2),
         );
+        const response = await apiClient.addBooks(formData);
+        console.log('Received response from backend:', response);
 
-        console.log('Response from backend:', response.data);
+        // Redirect to book list
+        navigate('/home/1/search');
       } catch (error) {
-        console.error('Error creating book:', error);
+        if (axios.isAxiosError(error)) {
+          console.error('Axios error:', error.message);
+          if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Response status:', error.response.status);
+            console.error('Response headers:', error.response.headers);
+          }
+        } else {
+          console.error('Unexpected error:', error);
+        }
       }
     } else {
       setErrors(formErrors);

@@ -110,13 +110,29 @@ export class LibraryClient {
 
   public async addBooks(data: CreateBookDto): Promise<ClientResponse<any>> {
     try {
+      const payload = {
+        ...data,
+      };
+
+      console.log('Sending POST request to addDoctor with data:', payload);
+
       // Pobierz token z localStorage
       const token = localStorage.getItem('token') as string;
 
       if (!token) {
         throw new Error('Token not found');
       }
-      const response = await this.client.post('/books/create');
+
+      const response: AxiosResponse<any> = await this.client.post(
+        '/books/create',
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
       console.log('Received response:', response);
 
       return {
@@ -126,32 +142,13 @@ export class LibraryClient {
       };
     } catch (error) {
       const axiosError = error as AxiosError<Error>;
+      console.error('Error occurred during addDoctor request:', axiosError);
 
-      return {
-        success: false,
-        data: null,
-        statusCode: axiosError.response?.status || 0,
-      };
-    }
-  }
-  public async addLoans(data: CreateLoanDto): Promise<ClientResponse<any>> {
-    try {
-      // Pobierz token z localStorage
-      const token = localStorage.getItem('token') as string;
-
-      if (!token) {
-        throw new Error('Token not found');
+      if (axiosError.response) {
+        console.error('Response data:', axiosError.response.data);
+        console.error('Response status:', axiosError.response.status);
+        console.error('Response headers:', axiosError.response.headers);
       }
-      const response = await this.client.post('/loans/create');
-      console.log('Received response:', response);
-
-      return {
-        success: true,
-        data: response.data,
-        statusCode: response.status,
-      };
-    } catch (error) {
-      const axiosError = error as AxiosError<Error>;
 
       return {
         success: false,

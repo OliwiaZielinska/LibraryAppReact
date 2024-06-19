@@ -1,6 +1,5 @@
 import './LoanList.css';
-import './/logo.css';
-
+import './logo.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Table from '@mui/material/Table';
@@ -20,11 +19,19 @@ import {
   TableFooter,
   TablePagination,
   Typography,
+  TextField,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   useTheme,
 } from '@mui/material';
+import UpdateIcon from '@mui/icons-material/Update';
 import Logo from '../book-list/logo.jpg';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -110,18 +117,21 @@ export default function LoanList() {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [rows, setRows] = useState<any[]>([]); // Tu przechowamy dane o wypożyczeniach
+  const [rows, setRows] = useState<any[]>([]);
+  const [loanId, setLoanId] = useState<string>('');
+  const [returnDate, setReturnDate] = useState<string>('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const token = localStorage.getItem('token'); // Pobierz token z localStorage
+        const token = localStorage.getItem('token');
         const response = await axios.get('http://localhost:8081/loans/getAll', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setRows(response.data); // Ustawiamy dane o wypożyczeniach
+        setRows(response.data);
       } catch (error) {
         console.error('Error fetching loans:', error);
       }
@@ -146,6 +156,34 @@ export default function LoanList() {
     setPage(0);
   };
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleUpdateLoan = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(
+        `http://localhost:8081/loans/update/${loanId}`,
+        { returnDate },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      alert('Loan updated successfully');
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error updating loan:', error);
+      alert('Failed to update loan');
+    }
+  };
+
   return (
     <div>
       <form className="LoanList">
@@ -154,12 +192,35 @@ export default function LoanList() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            mb: 2,
           }}
         >
           <img src={Logo} alt="Logo" className="logo" />
           <Typography variant="h4" component="h3">
             {t('listLoans')}
           </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mb: 2,
+          }}
+        >
+          <TextField
+            label={t('loanId')}
+            value={loanId}
+            onChange={(e) => setLoanId(e.target.value)}
+            variant="outlined"
+            size="small"
+          />
+          <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+            <SearchIcon />
+          </IconButton>
+          <IconButton color="primary" onClick={handleOpenDialog}>
+            <UpdateIcon />
+          </IconButton>
         </Box>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="custom pagination table">
@@ -231,6 +292,28 @@ export default function LoanList() {
           </Table>
         </TableContainer>
       </form>
+
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>{t('updateReturnDate')}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label={t('loanReturnDate')}
+            type="date"
+            value={returnDate}
+            onChange={(e) => setReturnDate(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleUpdateLoan} color="primary">
+            {t('update')}
+          </Button>
+          <Button onClick={handleCloseDialog} color="primary">
+            {t('cancel')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -13,6 +13,6 @@ export class CreateBookDto {
   title: string | undefined;
   author: string | undefined;
   publisher: string | undefined;
-  publicationYear: number | undefined;
-  AvailabledCopies: number | undefined;
+  publicationYear: string | undefined;
+  availabledCopies: string | undefined;
 }

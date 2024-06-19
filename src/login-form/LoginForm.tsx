@@ -20,7 +20,7 @@ function LoginForm() {
           localStorage.setItem('token', response.data?.token as string);
           navigate('/home');
         } else {
-          formik.setFieldError('username', 'Invalid username or password');
+          formik.setFieldError('username', 'Nieprawidłowe hasło lub login!');
         }
       });
     },
@@ -31,10 +31,7 @@ function LoginForm() {
     () =>
       yup.object().shape({
         username: yup.string().required('Required'),
-        password: yup
-          .string()
-          .required('Required')
-          .min(5, 'Password too short!'),
+        password: yup.string().required('Required').min(5, 'Za krótkie hasło!'),
       }),
     [],
   );

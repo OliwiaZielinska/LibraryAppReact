@@ -25,8 +25,16 @@ import {
   TextField,
   Typography,
   useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 
 interface Book {
@@ -134,13 +142,17 @@ function createData(
 export default function BookList() {
   const { t } = useTranslation();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows, setRows] = React.useState<Book[]>([]); // Używamy interfejsu Book
+  const [rowsPerPage, setRowsPerPage] = React.useState(4);
+  const [rows, setRows] = React.useState<Book[]>([]);
+  const [selectedBook, setSelectedBook] = React.useState<Book | null>(null);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openEditDialog, setOpenEditDialog] = React.useState(false);
+  const [editBook, setEditBook] = React.useState<Book | null>(null);
 
   React.useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const token = localStorage.getItem('token'); // Pobierz token z localStorage
+        const token = localStorage.getItem('token');
         const response = await axios.get('http://localhost:8081/books/getAll', {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -180,6 +192,67 @@ export default function BookList() {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleDeleteClick = (book: Book) => {
+    setSelectedBook(book);
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setSelectedBook(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedBook) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(
+          `http://localhost:8081/books/delete/${selectedBook.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setRows(rows.filter((row) => row.id !== selectedBook.id));
+        handleDialogClose();
+      } catch (error) {
+        console.error('Error deleting book:', error);
+      }
+    }
+  };
+
+  const handleEditClick = (book: Book) => {
+    setEditBook(book);
+    setOpenEditDialog(true);
+  };
+
+  const handleEditDialogClose = () => {
+    setOpenEditDialog(false);
+    setEditBook(null);
+  };
+
+  const handleEditConfirm = async () => {
+    if (editBook) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.patch(
+          `http://localhost:8081/books/${editBook.id}`,
+          editBook,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setRows(rows.map((row) => (row.id === editBook.id ? editBook : row)));
+        handleEditDialogClose();
+      } catch (error) {
+        console.error('Error updating book:', error);
+      }
+    }
   };
 
   return (
@@ -228,6 +301,7 @@ export default function BookList() {
                 <TableCell align="center">{t('publisher')}</TableCell>
                 <TableCell align="center">{t('publicationYear')}</TableCell>
                 <TableCell align="center">{t('available')}</TableCell>
+                <TableCell align="center">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -260,18 +334,32 @@ export default function BookList() {
                   <TableCell style={{ width: 160 }} align="center">
                     {row.isAvailable ? 'Yes' : 'No'}
                   </TableCell>
+                  <TableCell style={{ width: 160 }} align="center">
+                    <IconButton
+                      aria-label="edit"
+                      onClick={() => handleEditClick(row)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => handleDeleteClick(row)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={8} />
                 </TableRow>
               )}
             </TableBody>
             <TableFooter>
               <TableRow>
                 <TablePagination
-                  rowsPerPageOptions={[3, 4, 5]}
+                  rowsPerPageOptions={[2, 3, 4]}
                   colSpan={3}
                   count={rows.length}
                   rowsPerPage={rowsPerPage}
@@ -291,6 +379,101 @@ export default function BookList() {
           </Table>
         </TableContainer>
       </form>
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {t('confirmDeleteTitle')}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {t('confirmDeleteMessage')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            {t('no')}
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            {t('yes')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openEditDialog} onClose={handleEditDialogClose}>
+        <DialogTitle>{t('editBook')}</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="ISBN"
+            fullWidth
+            value={editBook?.isbn || ''}
+            onChange={(e) =>
+              setEditBook({ ...editBook!, isbn: e.target.value })
+            }
+          />
+          <TextField
+            margin="dense"
+            label={t('title')}
+            fullWidth
+            value={editBook?.title || ''}
+            onChange={(e) =>
+              setEditBook({ ...editBook!, title: e.target.value })
+            }
+          />
+          <TextField
+            margin="dense"
+            label={t('author')}
+            fullWidth
+            value={editBook?.author || ''}
+            onChange={(e) =>
+              setEditBook({ ...editBook!, author: e.target.value })
+            }
+          />
+          <TextField
+            margin="dense"
+            label={t('publisher')}
+            fullWidth
+            value={editBook?.publisher || ''}
+            onChange={(e) =>
+              setEditBook({ ...editBook!, publisher: e.target.value })
+            }
+          />
+          <TextField
+            margin="dense"
+            label={t('publicationYear')}
+            fullWidth
+            type="number"
+            value={editBook?.publicationYear || ''}
+            onChange={(e) =>
+              setEditBook({
+                ...editBook!,
+                publicationYear: parseInt(e.target.value),
+              })
+            }
+          />
+          <TextField
+            margin="dense"
+            label={t('availableCopies')}
+            type="number"
+            fullWidth
+            value={editBook?.isAvailable || ''}
+            onChange={(e) =>
+              setEditBook({ ...editBook!, isAvailable: e.target.value })
+            }
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditDialogClose} color="primary">
+            {t('cancel')}
+          </Button>
+          <Button onClick={handleEditConfirm} color="primary">
+            {t('save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

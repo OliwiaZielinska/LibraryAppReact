@@ -37,5 +37,15 @@
   "save": "Zapisz",
   "bookList": "Lista książek dostępnych w naszej bibliotece",
   "available": "Dostępność",
-  "choose": "Wybierz"
+  "choose": "Wybierz",
+  "loanId": "Id wypożyczenia",
+  "updateReturnDate": "Wprowadź datę oddania",
+  "cancel": "Anuluj",
+  "update": "Aktualizuj",
+  "confirmDeleteTitle": "Usuwanie książki",
+  "confirmDeleteMessage": "Czy na pewno chcesz usunąć tą książkę?",
+  "no": "Nie",
+  "yes": "Tak",
+  "actions": "Aktywność",
+  "editBook": "Zaktualizowanie informacji o książce"
 }
